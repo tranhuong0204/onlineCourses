@@ -6,10 +6,7 @@ import com.example.onlineCourses.repository.InvoiceRepository;
 import com.example.onlineCourses.repository.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -17,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/payment/callback")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PaymentCallbackController {
 
     private final OrderRepository orderRepo;
