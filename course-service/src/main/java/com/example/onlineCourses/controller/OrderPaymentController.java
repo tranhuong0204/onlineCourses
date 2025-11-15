@@ -23,6 +23,13 @@ public class OrderPaymentController {
         this.orderRepo = orderRepo;
     }
 
+    @GetMapping("/{orderId}")
+    public ResponseEntity<Order> getOrder(@PathVariable String orderId) {
+        return orderRepo.findByOrderId(orderId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/{orderId}/pay")
     public ResponseEntity<Map<String, String>> pay(@PathVariable String orderId) {
         Order order = orderRepo.findByOrderId(orderId)
@@ -58,6 +65,18 @@ public class OrderPaymentController {
             return ResponseEntity.ok("OK");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("FAILED");
+        }
+    }
+
+    @GetMapping("/vnpay/return")
+    public ResponseEntity<String> handleReturn(@RequestParam Map<String, String> params) {
+        String responseCode = params.get("vnp_ResponseCode");
+        String txnRef = params.get("vnp_TxnRef");
+
+        if ("00".equals(responseCode)) {
+            return ResponseEntity.ok("Thanh toán thành công cho đơn hàng " + txnRef);
+        } else {
+            return ResponseEntity.ok("Thanh toán thất bại cho đơn hàng " + txnRef);
         }
     }
 
