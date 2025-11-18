@@ -11,6 +11,7 @@ import com.example.onlineCourses.repository.VerificationCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,7 @@ public class UserService {
         return userRepo.existsByEmail(email);
     }
 
+    @PreAuthorize("hasRole('USER')")
     public User registerUser(User user) {
         // 1. Đánh dấu tài khoản chưa kích hoạt
         user.setEnabled(false);
@@ -84,6 +86,7 @@ public class UserService {
 //        return true;
 //    } dung link xac thuc
 
+    @PreAuthorize("hasRole('USER')")
     @Transactional
     //@PostMapping("/verify-otp")
     public boolean verifyOtp(@RequestParam String email, @RequestParam String code) {
@@ -119,13 +122,21 @@ public class UserService {
     }
 
     public void updateUser(Long id, UserDTO dto) {
-        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
         user.setUsername(dto.getUsername());
-        user.setRole(dto.getRole());
+
+        // Convert String -> Enum
+        if (dto.getRole() != null) {
+            user.setRole(User.Role.valueOf(dto.getRole().toUpperCase()));
+        }
+
         userRepo.save(user);
     }
 
-//    public void deleteUser(Long id) {
+
+    //    public void deleteUser(Long id) {
 //        userRepo.deleteById(id);
 //    }
 @Transactional

@@ -67,53 +67,55 @@ public class OrderController {
     }
 
 
-    // IPN callback từ VNPay
-    @PostMapping("/vnpay/ipn")
-    public ResponseEntity<String> handleVnpayIpn(@RequestParam Map<String, String> params) {
-        // Lấy các tham số từ VNPay
-        String txnRef = params.get("vnp_TxnRef");          // Mã đơn hàng
-        String responseCode = params.get("vnp_ResponseCode"); // Mã phản hồi
-        String transactionStatus = params.get("vnp_TransactionStatus"); // Trạng thái giao dịch
-        String secureHash = params.get("vnp_SecureHash"); // Chữ ký
-
-        // TODO: Kiểm tra chữ ký secureHash với secretKey của bạn
-        // Nếu chữ ký không hợp lệ thì return ResponseEntity.badRequest().body("Invalid signature");
-
-        // Tìm đơn hàng theo orderId
-        Order order = orderRepo.findByOrderId(txnRef)
-                .orElse(null);
-
-        if (order == null) {
-            return ResponseEntity.badRequest().body("Order not found");
-        }
-
-        // Cập nhật trạng thái đơn hàng
-        if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
-            order.setStatus("PAID");
-        } else {
-            order.setStatus("FAILED");
-        }
-
-        orderRepo.save(order);
-
-        // Trả về cho VNPay biết đã nhận IPN
-        return ResponseEntity.ok("IPN received");
-    }
-
-    @PostMapping("/update-status")
-    public ResponseEntity<String> updateOrderStatus(@RequestBody OrderStatusUpdateRequest req) {
-        Order order = orderRepo.findByOrderId(req.getOrderId())
-                .orElse(null);
-
-        if (order == null) {
-            return ResponseEntity.badRequest().body("Order not found");
-        }
-
-        order.setStatus(req.getStatus());
-        orderRepo.save(order);
-
-        return ResponseEntity.ok("Order updated");
-    }
+//    // IPN callback từ VNPay
+//    @PostMapping("/vnpay/ipn")
+//    public ResponseEntity<String> handleVnpayIpn(@RequestParam Map<String, String> params) {
+//        // Lấy các tham số từ VNPay
+//        String txnRef = params.get("vnp_TxnRef");          // Mã đơn hàng
+//        String responseCode = params.get("vnp_ResponseCode"); // Mã phản hồi
+//        String transactionStatus = params.get("vnp_TransactionStatus"); // Trạng thái giao dịch
+//        String secureHash = params.get("vnp_SecureHash"); // Chữ ký
+//
+//        // TODO: Kiểm tra chữ ký secureHash với secretKey của bạn
+//        // Nếu chữ ký không hợp lệ thì return ResponseEntity.badRequest().body("Invalid signature");
+//
+//        // Tìm đơn hàng theo orderId
+//        Order order = orderRepo.findByOrderId(txnRef)
+//                .orElse(null);
+//
+//        if (order == null) {
+//            return ResponseEntity.badRequest().body("Order not found");
+//        }
+//
+//        // Cập nhật trạng thái đơn hàng
+//        if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
+//            order.setStatus("PAID");
+//        } else {
+//            order.setStatus("FAILED");
+//        }
+//
+//        orderRepo.save(order);
+//
+//        // Trả về cho VNPay biết đã nhận IPN
+//        return ResponseEntity.ok("IPN received");
+//    }
+//
+//    @PostMapping("/update-status")
+//    public ResponseEntity<String> updateOrderStatus(@RequestBody OrderStatusUpdateRequest req) {
+//        Order order = orderRepo.findByOrderId(req.getOrderId())
+//                .orElse(null);
+//
+//        if (order == null) {
+//            return ResponseEntity.badRequest().body("Order not found");
+//        }
+//
+//        order.setStatus(req.getStatus());
+//        orderRepo.save(order);
+//
+//        System.out.println("Nhận callback: " + req.getOrderId() + " -> " + req.getStatus());
+//
+//        return ResponseEntity.ok("Order updated");
+//    }
 
 }
 

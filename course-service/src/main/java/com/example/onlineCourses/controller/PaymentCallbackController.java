@@ -1,8 +1,8 @@
 package com.example.onlineCourses.controller;
 
-import com.example.onlineCourses.model.Invoice;
+//import com.example.onlineCourses.model.Invoice;
 import com.example.onlineCourses.model.Order;
-import com.example.onlineCourses.repository.InvoiceRepository;
+//import com.example.onlineCourses.repository.InvoiceRepository;
 import com.example.onlineCourses.repository.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +18,11 @@ import java.util.Map;
 public class PaymentCallbackController {
 
     private final OrderRepository orderRepo;
-    private final InvoiceRepository invoiceRepo;
+    //private final InvoiceRepository invoiceRepo;
 
-    public PaymentCallbackController(OrderRepository orderRepo, InvoiceRepository invoiceRepo) {
+    public PaymentCallbackController(OrderRepository orderRepo) {
         this.orderRepo = orderRepo;
-        this.invoiceRepo = invoiceRepo;
+        //this.invoiceRepo = invoiceRepo;
     }
 
     @PostMapping("/vnpay")
@@ -35,22 +35,24 @@ public class PaymentCallbackController {
         Order order = orderRepo.findByOrderId(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
-        if ("SUCCESS".equals(status)) {
+        if ("SUCCESS".equalsIgnoreCase(status) || "PAID".equalsIgnoreCase(status)) {
             order.setStatus("PAID");
             orderRepo.save(order);
 
-            Invoice invoice = new Invoice();
-            invoice.setOrderId(order.getOrderId());
-            invoice.setUserId(order.getUserId());
-            invoice.setAmount(order.getAmount());
-            invoice.setPaymentMethod("VNPay");
-            invoice.setStatus("PAID");
-            invoice.setIssuedAt(LocalDateTime.now());
-            invoiceRepo.save(invoice);
+//            Invoice invoice = new Invoice();
+//            invoice.setOrderId(order.getOrderId());
+//            invoice.setUserId(order.getUserId());
+//            invoice.setAmount(order.getAmount());
+//            invoice.setPaymentMethod("VNPay");
+//            invoice.setStatus("PAID");
+//            invoice.setIssuedAt(LocalDateTime.now());
+//            invoiceRepo.save(invoice);
         } else {
             order.setStatus("FAILED");
             orderRepo.save(order);
         }
+
+        System.out.println("Callback VNPay: orderId=" + orderId + ", status=" + status);
         return ResponseEntity.ok("OK");
     }
 }

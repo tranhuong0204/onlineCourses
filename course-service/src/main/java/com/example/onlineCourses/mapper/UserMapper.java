@@ -9,7 +9,9 @@ public class UserMapper {
         dto.setId(user.getId());
         dto.setEmail(user.getEmail());
         dto.setUsername(user.getUsername());
-        dto.setRole(user.getRole());
+        if (user.getRole() != null) {
+            dto.setRole(user.getRole().name()); // convert enum -> String
+        }
         return dto;
     }
 }

@@ -50,36 +50,36 @@ public class OrderPaymentController {
         return ResponseEntity.ok(Map.of("paymentUrl", (String) resp.get("paymentUrl")));
     }
 
-    @PostMapping("/vnpay/ipn")
-    public ResponseEntity<String> handleIpn(@RequestParam Map<String, String> params) {
-        String responseCode = params.get("vnp_ResponseCode");
-        String txnRef = params.get("vnp_TxnRef");
+//    @PostMapping("/vnpay/ipn")
+//    public ResponseEntity<String> handleIpn(@RequestParam Map<String, String> params) {
+//        String responseCode = params.get("vnp_ResponseCode");
+//        String txnRef = params.get("vnp_TxnRef");
+//
+//        // TODO: xác thực chữ ký vnp_SecureHash ở đây
+//
+//        if ("00".equals(responseCode)) {
+//            // cập nhật trạng thái đơn hàng thành PAID
+//            orderRepo.findByOrderId(txnRef).ifPresent(order -> {
+//                order.setStatus("PAID");
+//                orderRepo.save(order);
+//            });
+//            return ResponseEntity.ok("OK");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("FAILED");
+//        }
+//    }
 
-        // TODO: xác thực chữ ký vnp_SecureHash ở đây
-
-        if ("00".equals(responseCode)) {
-            // cập nhật trạng thái đơn hàng thành PAID
-            orderRepo.findByOrderId(txnRef).ifPresent(order -> {
-                order.setStatus("PAID");
-                orderRepo.save(order);
-            });
-            return ResponseEntity.ok("OK");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("FAILED");
-        }
-    }
-
-    @GetMapping("/vnpay/return")
-    public ResponseEntity<String> handleReturn(@RequestParam Map<String, String> params) {
-        String responseCode = params.get("vnp_ResponseCode");
-        String txnRef = params.get("vnp_TxnRef");
-
-        if ("00".equals(responseCode)) {
-            return ResponseEntity.ok("Thanh toán thành công cho đơn hàng " + txnRef);
-        } else {
-            return ResponseEntity.ok("Thanh toán thất bại cho đơn hàng " + txnRef);
-        }
-    }
+//    @GetMapping("/vnpay/return")
+//    public ResponseEntity<String> handleReturn(@RequestParam Map<String, String> params) {
+//        String responseCode = params.get("vnp_ResponseCode");
+//        String txnRef = params.get("vnp_TxnRef");
+//
+//        if ("00".equals(responseCode)) {
+//            return ResponseEntity.ok("Thanh toán thành công cho đơn hàng " + txnRef);
+//        } else {
+//            return ResponseEntity.ok("Thanh toán thất bại cho đơn hàng " + txnRef);
+//        }
+//    }
 
 }
 
