@@ -50,8 +50,8 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/payment/callback/vnpay","/api/users/register", "/api/users/login", "/api/users/verify-otp").permitAll()
-                        .anyRequest().authenticated()
-//                                .anyRequest().permitAll()
+//                        .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 

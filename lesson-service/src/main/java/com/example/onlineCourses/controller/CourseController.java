@@ -20,7 +20,6 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    //    @PostMapping("/public/provider/{providerId}")
     @PostMapping("/public/create")
     public Course createCourse( @RequestBody Course course) {
         return courseService.createCourse( course);
