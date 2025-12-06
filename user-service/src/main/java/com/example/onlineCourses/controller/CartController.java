@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cart")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class CartController {
 
     @Autowired
@@ -48,7 +48,7 @@ public class CartController {
         return ResponseEntity.ok("Added");
     }
 
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{courseId}")
     public ResponseEntity<?> removeItem(
             @PathVariable Long courseId,
@@ -58,20 +58,20 @@ public class CartController {
         return ResponseEntity.ok("Removed");
     }
 
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/clear")
     public ResponseEntity<?> clearCart(@RequestParam Long userId) {
         cartService.clearCart(userId);
         return ResponseEntity.ok("Cleared");
     }
 
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @PostMapping("/checkout")
     public Order checkout(@RequestParam Long userId) {
         return cartService.checkout(userId);
     }
 
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @GetMapping("/total")
     public long getTotal(@RequestParam Long userId) {
         return cartService.calculateTotal(userId);
@@ -157,29 +157,6 @@ public class CartController {
 //        return ResponseEntity.ok("Course added to cart");
 //    }
 
-
-//    @DeleteMapping("/clear")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<String> clearCart(@RequestParam Long userId) {
-//        cartService.clearCart(userId);
-//        return ResponseEntity.ok("Cart cleared");
-//    }
-
-//    @PostMapping("/checkout")
-//    @PreAuthorize("hasRole('USER')")
-////    public ResponseEntity<Order> checkout(@RequestParam Long userId) {
-//    public ResponseEntity<Order> checkout() {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String username = auth.getName();
-//        Long userId = userService.findIdByUsername(username);
-//        Order order = cartService.checkout(userId);
-//        return ResponseEntity.ok(order);
-//    }
-
-//    @GetMapping("/total")
-//    public ResponseEntity<Long> getCartTotal(@RequestParam Long userId) {
-//        return ResponseEntity.ok(cartService.getCartTotal(userId));
-//    }
 
 
 }

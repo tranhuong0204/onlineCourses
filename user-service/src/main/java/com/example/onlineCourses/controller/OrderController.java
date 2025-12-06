@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "http://localhost:3000") // cho phép React gọi
+//@CrossOrigin(origins = "http://localhost:3000") // cho phép React gọi
 public class OrderController {
 
     private final OrderRepository orderRepo;
@@ -25,12 +25,6 @@ public class OrderController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/checkout")
-//    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Order> checkout(@RequestParam Long userId) {
-        Order order = cartService.checkout(userId);
-        return ResponseEntity.ok(order);
-    }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<Order> getOrderByOrderId(@PathVariable String orderId) {
@@ -86,7 +80,12 @@ public class OrderController {
 //                .orElse(ResponseEntity.notFound().build());
 //    }
 
-
+//    @PostMapping("/checkout")
+////    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<Order> checkout(@RequestParam Long userId) {
+//        Order order = cartService.checkout(userId);
+//        return ResponseEntity.ok(order);
+//    }
 
 }
 
