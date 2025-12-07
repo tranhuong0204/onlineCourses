@@ -144,6 +144,14 @@ public class CartService {
         return order;
     }
 
+//    public long calculateTotal(Long userId) {
+//        List<CartItem> cartItems = cartItemRepository.findByUserId(userId);
+//        return cartItems.stream()
+//                .mapToLong(CartItem::getPrice)
+//                .sum();
+//    }
+
+//     Tính tổng tiền giỏ hàng bangf cách gọi course service
     public long calculateTotal(Long userId) {
         List<CartItem> cartItems = cartItemRepository.findByUserId(userId);
 

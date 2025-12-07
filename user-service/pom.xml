@@ -38,6 +38,11 @@
 
 
     <dependencies>
+        <!-- CONFIG CLIENT -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
 
         <!-- EUREKA CLIENT -->
         <dependency>

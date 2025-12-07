@@ -41,11 +41,9 @@ public class JwtAuthenticationFilter implements GlobalFilter {
         String path = request.getURI().getPath();
 
 // Bỏ qua preflight + public endpoints
-        if (request.getMethod() == HttpMethod.OPTIONS || path.contains("login") || path.contains("register")) {
+        if (request.getMethod() == HttpMethod.OPTIONS || path.contains("login") || path.contains("register") || path.contains("/vnpay/return") || path.contains("/api/orders/update-status")) {
             return chain.filter(exchange);
         }
-
-
 
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -56,11 +54,12 @@ public class JwtAuthenticationFilter implements GlobalFilter {
         String token = authHeader.substring(7);
         try {
             String username = jwtService.extractUsername(token);
+            Long userId = jwtService.extractUserId(token); // lấy id từ claim "id"
             List<GrantedAuthority> roles = jwtService.extractRoles(token);
 
             // Gắn thông tin user vào header để service nội bộ đọc
             ServerHttpRequest mutatedRequest = request.mutate()
-                    .header("X-User-Id", username)
+                    .header("X-User-Id", String.valueOf(userId))
                     .header("X-User-Roles", roles.stream()
 //                            .map(r -> "ROLE_" + r)
                             .map(GrantedAuthority::getAuthority)

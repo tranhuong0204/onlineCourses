@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -37,18 +38,40 @@ public class CartController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/add-to-cart")
-    public ResponseEntity<?> addToCart(
-            @RequestParam Long userId,
-            @RequestParam Long courseId
-    ) {
+//    @PreAuthorize("hasRole('USER')")
+//    @PostMapping("/add-to-cart")
+//    public ResponseEntity<?> addToCart(
+//            @RequestParam Long userId,
+//            @RequestParam Long courseId
+//    ) {
+//
+//        cartService.addToCart(userId, courseId);
+//        return ResponseEntity.ok("Added");
+//    }
 
+////    @PreAuthorize("hasRole('USER')")
+//    @PostMapping("/add-to-cart/{courseId}")
+//    public ResponseEntity<?> addToCart(
+//            @PathVariable Long courseId,
+//            Authentication auth
+//    ) {
+//        Long userId = Long.valueOf(auth.getName()); // lấy từ token
+//        cartService.addToCart(userId, courseId);
+//        return ResponseEntity.ok(Map.of("message", "Added", "userId", userId, "courseId", courseId));
+//    }
+
+    @PostMapping("/add-to-cart/{courseId}")
+    public ResponseEntity<?> addToCart(
+            @PathVariable Long courseId,
+            @RequestHeader("X-User-Id") Long userId
+    ) {
         cartService.addToCart(userId, courseId);
-        return ResponseEntity.ok("Added");
+        return ResponseEntity.ok(Map.of("message", "Added", "userId", userId, "courseId", courseId));
     }
 
-//    @PreAuthorize("hasRole('USER')")
+
+
+    //    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{courseId}")
     public ResponseEntity<?> removeItem(
             @PathVariable Long courseId,
@@ -144,18 +167,7 @@ public class CartController {
 //        }
     }
 
-//    @PostMapping("/add-to-cart")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<String> addCourseToCart(@RequestParam Long courseId) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        System.out.println("Auth: " + auth);
-//
-////        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String username = auth.getName();
-//        Long userId = userService.findIdByUsername(username);
-//        cartService.addCourseToCart(userId, courseId);
-//        return ResponseEntity.ok("Course added to cart");
-//    }
+
 
 
 

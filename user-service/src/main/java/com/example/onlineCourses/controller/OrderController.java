@@ -5,9 +5,12 @@ import com.example.onlineCourses.model.CartItem;
 import com.example.onlineCourses.model.Order;
 import com.example.onlineCourses.repository.OrderRepository;
 import com.example.onlineCourses.service.CartService;
+import com.example.onlineCourses.service.OrderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -19,10 +22,13 @@ public class OrderController {
 
     private final OrderRepository orderRepo;
     private final CartService cartService;
+    private final OrderService orderService;
 
-    public OrderController(OrderRepository orderRepo, CartService cartService) {
+
+    public OrderController(OrderRepository orderRepo, CartService cartService, OrderService orderService) {
         this.orderRepo = orderRepo;
         this.cartService = cartService;
+        this.orderService = orderService;
     }
 
 
@@ -31,6 +37,28 @@ public class OrderController {
         return orderRepo.findByOrderId(orderId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/checkout/{userId}")
+    public ResponseEntity<Order> checkout(@PathVariable Long userId) {
+        try {
+            Order order = orderService.checkout(userId);
+            return ResponseEntity.ok(order);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+//    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/update-status")
+    public ResponseEntity<Void> updateStatus(@RequestBody Map<String, Object> payload) {
+        String orderId = (String) payload.get("orderId");
+        String status = (String) payload.get("status");
+
+        orderService.updateStatus(orderId, status);
+
+        return ResponseEntity.ok().build();
     }
 
     //chưa sửa
@@ -54,12 +82,7 @@ public class OrderController {
 //
 //        return ResponseEntity.ok(order);
 //    }
-//    @PostMapping("/checkout")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<Order> checkout(@RequestParam Long userId) {
-//        Order order = cartService.checkout(userId);
-//        return ResponseEntity.ok(order);
-//    }
+
 
 
     //chưa sửa
@@ -80,12 +103,7 @@ public class OrderController {
 //                .orElse(ResponseEntity.notFound().build());
 //    }
 
-//    @PostMapping("/checkout")
-////    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<Order> checkout(@RequestParam Long userId) {
-//        Order order = cartService.checkout(userId);
-//        return ResponseEntity.ok(order);
-//    }
+
 
 }
 

@@ -19,8 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
-    @Autowired
-    private JwtAuthenticationFilter jwtFilter;
+//    @Autowired
+//    private JwtAuthenticationFilter jwtFilter;
     @Autowired
     private HeaderAuthenticationFilter headerAuthenticationFilter;
 
@@ -47,7 +47,8 @@ public class SecurityConfig {
                         .requestMatchers("/payment/callback/vnpay",
                                 "/api/users/register",
                                 "/api/users/login",
-                                "/api/users/verify-otp")
+                                "/api/users/verify-otp",
+                                "/api/orders/update-status")
                         .permitAll()
                         .anyRequest().authenticated()   // 🔥 BẮT BUỘC
 //                        .anyRequest().permitAll()
