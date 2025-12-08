@@ -33,10 +33,18 @@ public class CartController {
 
     // Lấy toàn bộ giỏ hàng của user (items + tổng tiền)
     @GetMapping
-    public ResponseEntity<CartResponse> getCart(@RequestParam Long userId) {
+    public ResponseEntity<CartResponse> getCart(
+            @RequestHeader("X-User-Id") Long userId
+    ) {
         CartResponse response = cartService.getCart(userId);
         return ResponseEntity.ok(response);
     }
+
+//    @GetMapping
+//    public ResponseEntity<CartResponse> getCart(@RequestParam Long userId) {
+//        CartResponse response = cartService.getCart(userId);
+//        return ResponseEntity.ok(response);
+//    }
 
 //    @PreAuthorize("hasRole('USER')")
 //    @PostMapping("/add-to-cart")
@@ -49,16 +57,7 @@ public class CartController {
 //        return ResponseEntity.ok("Added");
 //    }
 
-////    @PreAuthorize("hasRole('USER')")
-//    @PostMapping("/add-to-cart/{courseId}")
-//    public ResponseEntity<?> addToCart(
-//            @PathVariable Long courseId,
-//            Authentication auth
-//    ) {
-//        Long userId = Long.valueOf(auth.getName()); // lấy từ token
-//        cartService.addToCart(userId, courseId);
-//        return ResponseEntity.ok(Map.of("message", "Added", "userId", userId, "courseId", courseId));
-//    }
+
 
     @PostMapping("/add-to-cart/{courseId}")
     public ResponseEntity<?> addToCart(
@@ -69,17 +68,25 @@ public class CartController {
         return ResponseEntity.ok(Map.of("message", "Added", "userId", userId, "courseId", courseId));
     }
 
-
-
     //    @PreAuthorize("hasRole('USER')")
-    @DeleteMapping("/{courseId}")
+    @DeleteMapping("/{cartItemId}")
     public ResponseEntity<?> removeItem(
-            @PathVariable Long courseId,
-            @RequestParam Long userId) {
+            @PathVariable Long cartItemId
+            ) {
 
-        cartService.removeItem(courseId, userId);
+        cartService.removeItem(cartItemId);
         return ResponseEntity.ok("Removed");
     }
+
+//    //    @PreAuthorize("hasRole('USER')")
+//    @DeleteMapping("/{courseId}")
+//    public ResponseEntity<?> removeItem(
+//            @PathVariable Long courseId,
+//            @RequestParam Long userId) {
+//
+//        cartService.removeItem(courseId, userId);
+//        return ResponseEntity.ok("Removed");
+//    }
 
 //    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/clear")

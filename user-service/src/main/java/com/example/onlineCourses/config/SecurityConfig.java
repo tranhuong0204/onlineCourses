@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.http.HttpMethod;
+
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableMethodSecurity(prePostEnabled = true) //jwt
@@ -36,25 +39,55 @@ public class SecurityConfig {
         authBuilder.userDetailsService(uds).passwordEncoder(encoder);
         return authBuilder.build();
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())  // ⛔ TẮT CORS Ở SERVICE
-                .addFilterBefore(headerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(cors -> cors.disable())
+                // đặt filter trước cả AnonymousAuthenticationFilter
+//                .addFilterBefore(headerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(headerAuthenticationFilter, org.springframework.security.web.authentication.AnonymousAuthenticationFilter.class)
+//                .addFilterBefore(headerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(headerAuthenticationFilter, AnonymousAuthenticationFilter.class)
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/payment/callback/vnpay",
+                        .requestMatchers(
+                                "/payment/callback/vnpay",
                                 "/api/users/register",
                                 "/api/users/login",
                                 "/api/users/verify-otp",
-                                "/api/orders/update-status")
+                                "/api/orders/update-status",
+                                "/api/orders/update-status/**",
+                                "/error"
+                        )
                         .permitAll()
-                        .anyRequest().authenticated()   // 🔥 BẮT BUỘC
-//                        .anyRequest().permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/orders/update-status**").permitAll()
+
+                        .anyRequest().authenticated()
                 );
         return http.build();
     }
+
+
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(csrf -> csrf.disable())
+//                .cors(cors -> cors.disable())  // ⛔ TẮT CORS Ở SERVICE
+//                .addFilterBefore(headerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/payment/callback/vnpay",
+//                                "/api/users/register",
+//                                "/api/users/login",
+//                                "/api/users/verify-otp",
+////                                "/**/update-status",
+//                                "/api/orders/update-status")
+//                        .permitAll()
+//                        .anyRequest().authenticated()   // 🔥 BẮT BUỘC
+////                        .anyRequest().permitAll()
+//                );
+//        return http.build();
+//    }
 
     // SecurityFilterChain: cấu hình bảo mật cho API
     //đang lấy role từ userDetailService

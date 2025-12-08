@@ -39,9 +39,11 @@ public class OrderController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/checkout/{userId}")
-    public ResponseEntity<Order> checkout(@PathVariable Long userId) {
+//    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/checkout")
+    public ResponseEntity<Order> checkout(
+            @RequestHeader("X-User-Id") Long userId
+    ) {
         try {
             Order order = orderService.checkout(userId);
             return ResponseEntity.ok(order);
@@ -50,9 +52,15 @@ public class OrderController {
         }
     }
 
-//    @PreAuthorize("hasRole('USER')")
+
+    //    @PreAuthorize("hasRole('USER')")
     @PostMapping("/update-status")
-    public ResponseEntity<Void> updateStatus(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<Void> updateStatus(@RequestBody Map<String, Object> payload, @RequestHeader Map<String, String> headers) {
+        // Log headers
+        System.out.println("Request Headers: " + headers);
+        // Log payload
+        System.out.println("Request Body: " + payload);
+
         String orderId = (String) payload.get("orderId");
         String status = (String) payload.get("status");
 
@@ -106,4 +114,3 @@ public class OrderController {
 
 
 }
-

@@ -7,8 +7,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
 
 @EnableFeignClients
-@SpringBootApplication
+//@SpringBootApplication
 @EnableDiscoveryClient
+@SpringBootApplication
 public class OnlineCoursesApplication {
 
 	public static void main(String[] args) {

@@ -75,6 +75,13 @@ public class OrderService {
         return savedOrder;
     }
 
+//    public void updateStatus(Long id, String status) {
+//        Order order = orderRepo.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+//        order.setStatus(status);
+//        orderRepo.save(order);
+//    }
+
     public void updateStatus(String orderId, String status) {
         Order order = orderRepo.findByOrderId(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));

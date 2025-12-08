@@ -97,12 +97,18 @@ public class CartService {
         cartItemRepository.save(newItem);
     }
 
-    public void removeItem(Long courseId, Long userId) {
-        CartItem item = cartItemRepository.findByUserIdAndCourseId(userId, courseId)
+    public void removeItem(Long cartItemId) {
+        CartItem item = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
-
         cartItemRepository.delete(item);
     }
+
+//    public void removeItem(Long courseId, Long userId) {
+//        CartItem item = cartItemRepository.findByUserIdAndCourseId(userId, courseId)
+//                .orElseThrow(() -> new RuntimeException("Item not found"));
+//
+//        cartItemRepository.delete(item);
+//    }
 
     public void clearCart(Long userId) {
         cartItemRepository.deleteByUserId(userId);

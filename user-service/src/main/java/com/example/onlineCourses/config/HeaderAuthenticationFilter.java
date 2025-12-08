@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +26,26 @@ public class HeaderAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String header = headerNames.nextElement();
+            log.info("HEADER = " + header + " : " + request.getHeader(header));
+        }
+
+        String path = request.getRequestURI();
+//         Bỏ qua filter cho update-status
+        if (path.contains("/api/orders/update-status")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        log.info(">>> TOKEN = " + request.getHeader("Tên-header-token"));
+
+//        if (path.startsWith("/api/orders/update-status")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
 
         String userId = request.getHeader("X-User-Id");
         String rolesHeader = request.getHeader("X-User-Roles");
@@ -45,6 +66,10 @@ public class HeaderAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(auth);
 
             log.info("Authentication SUCCESS - Authorities = {}", authorities);
+            log.warn(">>> REQUEST PATH = {}", request.getRequestURI());
+            log.info(">>> TOKEN = " + request.getHeader("Tên-header-token"));
+
+
         }
 
         filterChain.doFilter(request, response);
